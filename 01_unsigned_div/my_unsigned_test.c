@@ -8,9 +8,22 @@ int main(int argc, char const *argv[])
 {
     Unsigned *ret = get_list();
     insert_back(ret, 1, 2);  // 3
-    insert_front(ret, 3, 4); // 2
     insert_back(ret, 5, 6);  // 4
     insert_front(ret, 2, 3); // 1
     remove_front(ret);
+
+    Unsigned *cmp1 = get_list();
+    Unsigned *cmp2 = get_list();
+    insert_front(cmp1, 3, 4); // 2
+    insert_front(cmp1, 3, 4); // 2
+    insert_front(cmp2, 4, 4); // 2
+    insert_front(cmp2, 3, 4); // 2
+    int x = unsigned_cmp(cmp1, cmp2);
+
+    Unsigned *ad1 = unsigned_from_ll(2123);
+    Unsigned *ad2 = unsigned_from_ll(1987);
+
+    Unsigned *r1 = unsigned_sub(ad1, ad2);
+
     return 0;
 }
