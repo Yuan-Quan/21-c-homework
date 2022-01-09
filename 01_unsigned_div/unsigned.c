@@ -52,11 +52,38 @@ int unsigned_is_greater_than(const Unsigned *x, const Unsigned *y)
     return 1;
 }
 
+int unsigned_is_equal(const Unsigned *x, const Unsigned *y)
+{
+    // if two list is not the same size, no need to compare
+    if (x->size != y->size)
+    {
+        return 0;
+    }
+
+    int flag = 1;
+    Link *ptrx = x->head;
+    Link *ptry = y->head;
+
+    while (flag && ptrx != 0 && ptry != 0) // keeep comparing and update flag, until something goes wrong
+    {
+        flag = ptrx->n == ptry->n;
+        ptrx = ptrx->next;
+        ptry = ptry->next;
+    }
+
+    return flag;
+}
 // remove the leading 0s
 void unsigned_remove_leading_zero(Unsigned *list)
 {
+    if (list->size == 0)
+    {
+        return;
+    }
+
     Link *ptr = list->head;
-    while (ptr->n == 0)
+
+    while (ptr && ptr->n == 0)
     {
         ptr = ptr->next;
         remove_front(list);
@@ -104,26 +131,18 @@ long long unsigned_to_ll(const Unsigned *x)
 int unsigned_cmp(const Unsigned *x, const Unsigned *y)
 {
     // 在此处补充完整
-    // only x value of each node is respected
-
-    // if two list is not the same size, no need to compare
-    if (x->size != y->size)
+    if (unsigned_is_greater_than(x, y))
     {
-        return 0;
+        if (unsigned_is_equal(x, y))
+        {
+            return 0;
+        }
+        return 1;
     }
-
-    int flag = 1;
-    Link *ptrx = x->head;
-    Link *ptry = y->head;
-
-    while (flag && ptrx != 0 && ptry != 0) // keeep comparing and update flag, until something goes wrong
+    else
     {
-        flag = ptrx->n == ptry->n;
-        ptrx = ptrx->next;
-        ptry = ptry->next;
+        return -1;
     }
-
-    return flag;
 }
 
 Unsigned *unsigned_add(const Unsigned *x, const Unsigned *y)
