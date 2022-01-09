@@ -209,11 +209,80 @@ Unsigned *unsigned_sub(const Unsigned *x, const Unsigned *y)
 Unsigned *unsigned_mul(const Unsigned *x, const Unsigned *y)
 {
     // 在此处补充完整
+    int carry_bit = 0;
+    Link *ptrx = x->tail;
+    Link *ptry = y->tail;
+    Unsigned *result = get_list();
+    Unsigned *mul = get_list();
+    int product = 0;
+
+    // keep track of how many 10s should be multiplied
+    int count = 0;
+    // for each digit of y, multiply with x, multiply some number of 10s, add to result
+    while (ptry)
+    {
+        // reset the mul for next round of calculation
+        list_free(mul);
+        mul = get_list();
+        ptrx = x->tail;
+
+        // calculate x * a digit of y
+        while (ptrx || carry_bit)
+        {
+            product = get_link_value(ptrx) * get_link_value(ptry);
+            if (carry_bit)
+            {
+                product += carry_bit;
+                carry_bit = 0;
+            }
+
+            insert_front(mul, product % 10, ignore);
+            if (product >= 10)
+            {
+                carry_bit = product / 10;
+            }
+            if (ptrx != 0)
+            {
+                ptrx = ptrx->prior;
+            }
+        }
+
+        // *10's, add with result
+        for (size_t i = 0; i < count; i++)
+        {
+            insert_back(mul, 0, ignore);
+        }
+        result = unsigned_add(result, mul);
+
+        // keep track of how much 10s should be multiplied
+        count++;
+
+        // increment ptry to next digit
+        if (ptry != 0)
+        {
+            ptry = ptry->prior;
+        }
+    }
+
+    return result;
 }
 
 Unsigned *unsigned_div(const Unsigned *x, const Unsigned *y, Unsigned **rem)
 {
     // 在此处补充完整
+    Unsigned *result = get_list();
+    Unsigned *one = get_list();
+    insert_front(one, 1, ignore);
+
+    while (unsigned_is_greater_than(x, y))
+    {
+        x = unsigned_sub(x, y);
+        result = unsigned_add(result, one);
+    }
+
+    *rem = x;
+
+    return result;
 }
 
 // -----------------------------------------------------------------------------

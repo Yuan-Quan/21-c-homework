@@ -20,10 +20,11 @@ int main(int argc, char const *argv[])
     insert_front(cmp2, 3, 4); // 2
     int x = unsigned_cmp(cmp1, cmp2);
 
-    Unsigned *ad1 = unsigned_from_ll(2123);
-    Unsigned *ad2 = unsigned_from_ll(1987);
+    Unsigned *ad1 = unsigned_from_ll(12345);
+    Unsigned *ad2 = unsigned_from_ll(233);
 
-    Unsigned *r1 = unsigned_sub(ad1, ad2);
+    Unsigned **remainder;
+    Unsigned *r1 = unsigned_div(ad1, ad2, remainder);
 
     return 0;
 }
