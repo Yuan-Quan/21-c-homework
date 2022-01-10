@@ -4,11 +4,11 @@
 
 // -----------------------------------------------------------------------------
 
-static BigInt* get_big_int(void)
+static BigInt *get_big_int(void)
 {
-    BigInt* bi = malloc(sizeof(BigInt));
+    BigInt *bi = malloc(sizeof(BigInt));
     bi->sign = plus;
-    bi->val  = 0;
+    bi->val = 0;
     return bi;
 }
 
@@ -16,26 +16,26 @@ static BigInt* get_big_int(void)
 
 // -----------------------------------------------------------------------------
 
-BigInt* big_int_from_ll(long long x)
+BigInt *big_int_from_ll(long long x)
 {
-    BigInt* bi = get_big_int();
+    BigInt *bi = get_big_int();
     bi->sign = (x >= 0) ? plus : minus;
-    bi->val  = unsigned_from_ll(bi->sign * x);
+    bi->val = unsigned_from_ll(bi->sign * x);
     return bi;
 }
 
-BigInt* big_int_copy(const BigInt* x)
+BigInt *big_int_copy(const BigInt *x)
 {
     if (!x)
         return 0;
 
-    BigInt* y = get_big_int();
+    BigInt *y = get_big_int();
     y->sign = x->sign;
-    y->val  = unsigned_copy(x->val);
+    y->val = unsigned_copy(x->val);
     return y;
 }
 
-void big_int_free(BigInt* bi)
+void big_int_free(BigInt *bi)
 {
     if (!bi)
         return;
@@ -44,7 +44,7 @@ void big_int_free(BigInt* bi)
     free(bi);
 }
 
-char* big_int_to_str(const BigInt* bi)
+char *big_int_to_str(const BigInt *bi)
 {
     if (!(bi && bi->val->size > 0))
         return 0;
@@ -52,43 +52,66 @@ char* big_int_to_str(const BigInt* bi)
     Int n = (bi->sign == minus) ? bi->val->size + 2
                                 : bi->val->size + 1;
 
-    char* ret = calloc(n, sizeof(char));
-    char* p   = ret;
+    char *ret = calloc(n, sizeof(char));
+    char *p = ret;
     if (bi->sign == minus)
         *p++ = '-';
 
-    for (Link* link = bi->val->head; link; ++p, link = link->next)
+    for (Link *link = bi->val->head; link; ++p, link = link->next)
         *p = link->n + '0';
     *p = '\0';
     return ret;
 }
 
-long long big_int_to_ll(const BigInt* bi)
+long long big_int_to_ll(const BigInt *bi)
 {
     return bi->sign * unsigned_to_ll(bi->val);
 }
 
-int big_int_cmp(const BigInt* x, const BigInt* y)
+int big_int_cmp(const BigInt *x, const BigInt *y)
+{
+    // 在此处补充完整
+    // positive always bigger than negative
+    if (x->sign != y->sign)
+    {
+        if (x->sign == plus)
+        {
+            return 1;
+        }
+        else
+        {
+            return -1;
+        }
+    }
+    else
+    {
+        if (x->sign == plus)
+        {
+            return unsigned_cmp(x->val, y->val);
+        }
+        else
+        {
+            return -1 * unsigned_cmp(x->val, y->val);
+        }
+    }
+}
+
+BigInt *big_int_add(const BigInt *x, const BigInt *y)
 {
     // 在此处补充完整
 }
 
-BigInt* big_int_add(const BigInt* x, const BigInt* y)
+BigInt *big_int_sub(const BigInt *x, const BigInt *y)
 {
     // 在此处补充完整
 }
 
-BigInt* big_int_sub(const BigInt* x, const BigInt* y)
+BigInt *big_int_mul(const BigInt *x, const BigInt *y)
 {
     // 在此处补充完整
 }
 
-BigInt* big_int_mul(const BigInt* x, const BigInt* y)
-{
-    // 在此处补充完整
-}
-
-BigInt* big_int_div(const BigInt* x, const BigInt* y, BigInt** rem)
+BigInt *big_int_div(const BigInt *x, const BigInt *y, BigInt **rem)
 {
     // 在此处补充完整
 }
