@@ -99,21 +99,111 @@ int big_int_cmp(const BigInt *x, const BigInt *y)
 BigInt *big_int_add(const BigInt *x, const BigInt *y)
 {
     // 在此处补充完整
+    BigInt *result = get_big_int();
+    // sign is different,
+    if (x->sign != y->sign)
+    {
+        if (x->sign == plus)
+        {
+            switch (unsigned_cmp(x->val, y->val))
+            {
+            case 0:
+            case 1:
+                result->val = unsigned_sub(x->val, y->val);
+                result->sign = plus;
+                break;
+            case -1:
+                result->val = unsigned_sub(y->val, x->val);
+                result->sign = minus;
+                break;
+            }
+        }
+        else
+        {
+            switch (unsigned_cmp(x->val, y->val))
+            {
+            case 0:
+            case 1:
+                result->val = unsigned_sub(x->val, y->val);
+                result->sign = minus;
+                break;
+            case -1:
+                result->val = unsigned_sub(y->val, x->val);
+                result->sign = plus;
+                break;
+            }
+        }
+    }
+    else
+    {
+        // if they have same sign
+        result->sign = x->sign;
+        result->val = unsigned_add(x->val, y->val);
+    }
+    return result;
 }
 
 BigInt *big_int_sub(const BigInt *x, const BigInt *y)
 {
     // 在此处补充完整
+    // get a copy of y
+    BigInt *flipped_y = big_int_copy(y);
+    // flip it
+    if (flipped_y->sign == plus)
+    {
+        flipped_y->sign = minus;
+    }
+    else
+    {
+        flipped_y->sign = plus;
+    }
+
+    return big_int_add(x, flipped_y);
 }
 
 BigInt *big_int_mul(const BigInt *x, const BigInt *y)
 {
     // 在此处补充完整
+    BigInt *result = get_big_int();
+    if (x->sign != y->sign)
+    {
+        result->sign = minus;
+    }
+    else
+    {
+        result->sign = plus;
+    }
+
+    result->val = unsigned_mul(x->val, y->val);
+
+    return result;
 }
 
 BigInt *big_int_div(const BigInt *x, const BigInt *y, BigInt **rem)
 {
     // 在此处补充完整
+    BigInt *result = get_big_int();
+    Unsigned *remainder = unsigned_from_ll(0);
+    if (!*rem)
+    {
+        *rem = get_big_int();
+    }
+
+    if (x->sign != y->sign)
+    {
+        result->sign = minus;
+    }
+    else
+    {
+        result->sign = plus;
+    }
+
+    result->val = unsigned_div(x->val, y->val, &remainder);
+
+    (*rem)->sign = x->sign;
+    (*rem)->val = remainder;
+
+    return result;
 }
 
 // -----------------------------------------------------------------------------
