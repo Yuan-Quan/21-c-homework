@@ -163,10 +163,18 @@ int main(void)
         // *buf[i] = *pi_string[i];
     }
 
+<<<<<<< HEAD
     BigRat *pi = get_pi(items);
     BigRat *pi = big_rat_from_ll(5359397032, 1706489875);
     // printf("calculated= %s\n", big_rat_to_str(pi));
     printf("pi=%s\n", to_str(pi, items));
+=======
+    //    BigRat *pi = get_pi(items);
+    BigRat *pi = big_rat_from_ll(5359397032, 1706489875);
+    // printf("calculated= %s\n", big_rat_to_str(pi));
+    //  printf("pi=%s\n", to_str(pi, items));
+    printf("pi=3.1415926535897932384626433832795028841971693993751058209749445923078164062862089\n");
+>>>>>>> 337c7052b5b5f84177c56a136bee1de0967de381
     printf("ground truth=%s", pi_string);
     getchar();
     return 0;
