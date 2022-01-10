@@ -98,9 +98,9 @@ void list_free(List *list)
     {
         Link *p = link;
         link = link->next;
-        free(p);
+        // free(p);
     }
-    free(list);
+    // free(list);
 }
 
 // -----------------------------------------------------------------------------
