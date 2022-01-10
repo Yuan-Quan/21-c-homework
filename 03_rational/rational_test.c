@@ -14,8 +14,8 @@ ll big_rat_test(ll, ll, ll, ll, ll, ll, ll, ll, int, int, int, int);
 
 int main(void)
 {
-    ll errors = 0;
-    //    big_rat_test(-30, 40, -200, -160, -130, -110, 900, 1100, 1, 1, 1, 1);
+    ll errors =
+        big_rat_test(-30, 40, -200, -160, -130, -110, 900, 1100, 1, 1, 1, 1);
 
     printf("big rational test errors: %lld\n\n", errors);
     return 0;
