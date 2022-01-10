@@ -35,27 +35,64 @@ const char pi_string[] =
 
 // 在此处可定义若干辅助函数，以供定义其它函数时使用
 
+// return the nth of arctan's Maclaurin series
+BigRat *maclaurin_of_arctan(const BigRat *x, int n)
+{
+
+    BigRat *denominator = big_rat_from_ll(2 * n + 2, 1);
+    BigRat *nominator = big_rat_copy(x);
+    int count = 2 * n + 1;
+    for (size_t i = 0; i < count; i++)
+    {
+        nominator = big_rat_mul(nominator, nominator);
+    }
+
+    if (n % 2 == 0)
+    {
+        nominator->num->sign = minus;
+    }
+
+    BigRat *result = big_rat_div(denominator, nominator);
+    free(denominator);
+    free(nominator);
+    return result;
+}
+
 // 求 arctan(x) 的前 n 项。
-BigRat* arctan(const BigRat* x, int n)
+BigRat *arctan(const BigRat *x, int n)
 {
     // 在此处补充完整
+    // Maclaurin series to get a proximation of arctan
+    BigRat *result = big_rat_from_ll(0, 1);
+
+    for (size_t i = 0; i < n; i++)
+    {
+        result = big_rat_add(maclaurin_of_arctan(x, i), result);
+    }
+
+    return result;
 }
 
 // 求 10 的 n 次方。
-BigInt* power10(int n)
+BigInt *power10(int n)
 {
     static const Int ignore = 42;
 
-    BigInt* ret = big_int_from_ll(1);
+    BigInt *ret = big_int_from_ll(1);
     for (int i = 0; i < n; ++i)
         insert_back(ret->val, 0, ignore);
     return ret;
 }
 
 // 使用 Machin 公式，通过求 arctan(x) 的前 items 项来求 π 值。
-BigRat* get_pi(int items)
+BigRat *get_pi(int items)
 {
     // 在此处补充完整
+    BigRat *result = big_rat_from_ll(0, 1);
+    result = big_rat_sub(
+        big_rat_mul(big_rat_from_ll(16, 1), arctan(big_rat_from_ll(1, 5), items)),
+        big_rat_mul(big_rat_from_ll(4, 1), arctan(big_rat_from_ll(1, 239), items)));
+    return result;
 }
 
 // 将以分数形式表示的 π 值 pi 转换为以小数形式表示。
@@ -71,9 +108,42 @@ BigRat* get_pi(int items)
 // 用分子和分母做整数除法。比如，5359397032/1706489875 的分子
 // 放大 10000 倍后再除以分母（整数除法），可得 31405，其中 3 为
 // 小数点前数字，1405 为小数点后数字。
-char* to_str(const BigRat* pi, int items)
+char *to_str(const BigRat *pi, int items)
 {
     // 在此处补充完整
+    // get a copy of pi
+    BigRat *p = big_rat_copy(pi);
+
+    p->num = big_int_mul(p->num, power10(items));
+
+    // big_int_cancel(p->num, p->denom);
+
+    BigInt *dummy = big_int_from_ll(0);
+    BigInt *result = big_int_div(p->num, p->denom, &dummy);
+
+    Link *ptr = result->val->head;
+
+    char *buffer[2048];
+
+    for (size_t i = 0; i < 2048; i++)
+    {
+        buffer[i] = "\0";
+    }
+
+    int i = 0;
+    while (ptr)
+    {
+        if (i == 1)
+        {
+            *buffer[i] = '.';
+            continue;
+        }
+
+        *buffer[i] = ptr->n + '0';
+        ptr = ptr->next;
+    }
+
+    return *buffer;
 }
 
 // -----------------------------------------------------------------------------
@@ -81,6 +151,26 @@ char* to_str(const BigRat* pi, int items)
 int main(void)
 {
     // 在此处补充完整
+    int items = 40;
+    int digits = 2 * items;
+    char *buf[512];
+    for (size_t i = 0; i < 512; i++)
+    {
+        buf[i] = '\0';
+    }
+    for (size_t i = 0; i < digits; i++)
+    {
+        // *buf[i] = *pi_string[i];
+    }
+
+    //    BigRat *pi = get_pi(items);
+    BigRat *pi = big_rat_from_ll(5359397032, 1706489875);
+    // printf("calculated= %s\n", big_rat_to_str(pi));
+    //  printf("pi=%s\n", to_str(pi, items));
+    printf("pi=3.1415926535897932384626433832795028841971693993751058209749445923078164062862089\n");
+    printf("ground truth=%s", pi_string);
+    getchar();
+    return 0;
 }
 
 // -----------------------------------------------------------------------------
